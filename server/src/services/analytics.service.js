@@ -149,8 +149,20 @@ export async function getHeatmapData({ pageUrl, url, startDate, endDate, device,
     return { points: [], total_clicks: 0, clusters: [] };
   }
 
+  let pathOnly = targetUrl;
+  try {
+    if (targetUrl.includes('://')) {
+      pathOnly = new URL(targetUrl).pathname;
+    }
+  } catch (e) {}
+
   const match = {
-    $or: [{ page_url: targetUrl }, { page_path: targetUrl }],
+    $or: [
+      { page_url: targetUrl },
+      { page_path: targetUrl },
+      { page_path: pathOnly },
+      { page_url: { $regex: `${pathOnly}$`, $options: 'i' } },
+    ],
     event_type: 'click',
   };
 

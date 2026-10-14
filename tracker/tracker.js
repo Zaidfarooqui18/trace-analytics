@@ -22,11 +22,19 @@
         (currentScript.getAttribute('data-api') ||
           currentScript.getAttribute('data-api-base-url'))) ||
       '';
-    // If not specified, default to origin or fallback to localhost:5000
+    // If not specified, try to infer from script src origin or fallback to origin/localhost:5000
     if (!apiBaseUrl) {
-      apiBaseUrl = window.location.origin.includes(':3001')
-        ? 'http://localhost:5000'
-        : window.location.origin;
+      if (currentScript && currentScript.src) {
+        try {
+          var parsedScriptUrl = new URL(currentScript.src);
+          apiBaseUrl = parsedScriptUrl.origin;
+        } catch (e) {}
+      }
+      if (!apiBaseUrl) {
+        apiBaseUrl = window.location.origin.includes(':3001')
+          ? 'http://localhost:5000'
+          : window.location.origin;
+      }
     }
     // Remove trailing slash
     apiBaseUrl = apiBaseUrl.replace(/\/+$/, '');
@@ -151,10 +159,20 @@
           typeof el.className === 'string'
             ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.')
             : '';
-        var text = (el.innerText || el.textContent || el.value || '')
-          .trim()
-          .slice(0, 40)
-          .replace(/[\n\r\t]+/g, ' ');
+
+        // Privacy: Never collect values from text inputs, password fields, or textareas
+        var isSensitiveInput = tag === 'input' || tag === 'textarea' || el.isContentEditable;
+        var isButtonInput = tag === 'input' && (el.type === 'button' || el.type === 'submit' || el.type === 'reset');
+        var text = '';
+
+        if (!isSensitiveInput) {
+          text = (el.innerText || el.textContent || '')
+            .trim()
+            .slice(0, 40)
+            .replace(/[\n\r\t]+/g, ' ');
+        } else if (isButtonInput) {
+          text = (el.value || '').trim().slice(0, 30);
+        }
 
         // CSS Selector path (up to 3 levels)
         var path = [];
@@ -292,13 +310,13 @@
       var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
       var vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
       var dw = Math.max(
-        document.body.scrollWidth || 0,
-        document.documentElement.scrollWidth || 0,
+        (document.body && document.body.scrollWidth) || 0,
+        (document.documentElement && document.documentElement.scrollWidth) || 0,
         vw
       );
       var dh = Math.max(
-        document.body.scrollHeight || 0,
-        document.documentElement.scrollHeight || 0,
+        (document.body && document.body.scrollHeight) || 0,
+        (document.documentElement && document.documentElement.scrollHeight) || 0,
         vh
       );
 
@@ -350,13 +368,13 @@
         var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
         var vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
         var dw = Math.max(
-          document.body.scrollWidth || 0,
-          document.documentElement.scrollWidth || 0,
+          (document.body && document.body.scrollWidth) || 0,
+          (document.documentElement && document.documentElement.scrollWidth) || 0,
           vw
         );
         var dh = Math.max(
-          document.body.scrollHeight || 0,
-          document.documentElement.scrollHeight || 0,
+          (document.body && document.body.scrollHeight) || 0,
+          (document.documentElement && document.documentElement.scrollHeight) || 0,
           vh
         );
 

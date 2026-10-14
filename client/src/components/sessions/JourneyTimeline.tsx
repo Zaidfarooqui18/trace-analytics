@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { Eye, MousePointer, Flame, Zap, Target } from 'lucide-react';
 import { AnalyticsEvent } from '../../types';
 import { formatTimestamp } from '../../lib/utils';
@@ -14,6 +15,14 @@ export function JourneyTimeline({
   activeIndex = null,
   onEventClick,
 }: JourneyTimelineProps) {
+  const activeItemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (activeIndex !== null && activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [activeIndex]);
+
   if (!events || events.length === 0) {
     return (
       <div className="p-8 text-center text-xs text-slate-400">
@@ -43,6 +52,7 @@ export function JourneyTimeline({
         return (
           <div
             key={evt.event_id || idx}
+            ref={isActive ? activeItemRef : undefined}
             onClick={() => onEventClick?.(idx)}
             className={`relative flex items-start gap-4 p-3.5 rounded-2xl transition-all cursor-pointer ${
               isActive

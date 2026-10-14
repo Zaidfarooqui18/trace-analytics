@@ -66,9 +66,31 @@ export function HeatmapCanvas({
       if (!alphaCtx) return;
       alphaCtx.scale(dpr, dpr);
 
+      // Helper to extract normalized coordinates with mathematical fallbacks
+      const getNormCoords = (pt: HeatmapPoint) => {
+        let nx = typeof pt.normalized_x === 'number' ? pt.normalized_x : null;
+        let ny = typeof pt.normalized_y === 'number' ? pt.normalized_y : null;
+
+        if (nx === null && typeof pt.page_x === 'number' && typeof pt.document_width === 'number' && pt.document_width > 0) {
+          nx = pt.page_x / pt.document_width;
+        } else if (nx === null && typeof pt.x === 'number' && typeof pt.viewport_width === 'number' && pt.viewport_width > 0) {
+          nx = pt.x / pt.viewport_width;
+        }
+
+        if (ny === null && typeof pt.page_y === 'number' && typeof pt.document_height === 'number' && pt.document_height > 0) {
+          ny = pt.page_y / pt.document_height;
+        } else if (ny === null && typeof pt.y === 'number' && typeof pt.viewport_height === 'number' && pt.viewport_height > 0) {
+          ny = pt.y / pt.viewport_height;
+        }
+
+        return {
+          nx: Math.min(Math.max(nx ?? 0.5, 0), 1),
+          ny: Math.min(Math.max(ny ?? 0.5, 0), 1),
+        };
+      };
+
       filteredPoints.forEach((pt) => {
-        const nx = typeof pt.normalized_x === 'number' ? pt.normalized_x : 0.5;
-        const ny = typeof pt.normalized_y === 'number' ? pt.normalized_y : 0.5;
+        const { nx, ny } = getNormCoords(pt);
         const cx = nx * width;
         const cy = ny * height;
 
@@ -95,22 +117,18 @@ export function HeatmapCanvas({
           let r = 0, g = 0, b = 0;
 
           if (ratio < 0.25) {
-            // Blue to Cyan
             r = 0;
             g = Math.round((ratio / 0.25) * 255);
             b = 255;
           } else if (ratio < 0.5) {
-            // Cyan to Green
             r = 0;
             g = 255;
             b = Math.round((1 - (ratio - 0.25) / 0.25) * 255);
           } else if (ratio < 0.75) {
-            // Green to Yellow
             r = Math.round(((ratio - 0.5) / 0.25) * 255);
             g = 255;
             b = 0;
           } else {
-            // Yellow to Red
             r = 255;
             g = Math.round((1 - (ratio - 0.75) / 0.25) * 255);
             b = 0;
@@ -123,12 +141,31 @@ export function HeatmapCanvas({
         }
       }
 
-      ctx.putImageData(imgData, 0, 0);
+      alphaCtx.putImageData(imgData, 0, 0);
+      ctx.drawImage(alphaCanvas, 0, 0, width, height);
     } else if (renderMode === 'points') {
+      const getNormCoords = (pt: HeatmapPoint) => {
+        let nx = typeof pt.normalized_x === 'number' ? pt.normalized_x : null;
+        let ny = typeof pt.normalized_y === 'number' ? pt.normalized_y : null;
+        if (nx === null && typeof pt.page_x === 'number' && typeof pt.document_width === 'number' && pt.document_width > 0) {
+          nx = pt.page_x / pt.document_width;
+        } else if (nx === null && typeof pt.x === 'number' && typeof pt.viewport_width === 'number' && pt.viewport_width > 0) {
+          nx = pt.x / pt.viewport_width;
+        }
+        if (ny === null && typeof pt.page_y === 'number' && typeof pt.document_height === 'number' && pt.document_height > 0) {
+          ny = pt.page_y / pt.document_height;
+        } else if (ny === null && typeof pt.y === 'number' && typeof pt.viewport_height === 'number' && pt.viewport_height > 0) {
+          ny = pt.y / pt.viewport_height;
+        }
+        return {
+          nx: Math.min(Math.max(nx ?? 0.5, 0), 1),
+          ny: Math.min(Math.max(ny ?? 0.5, 0), 1),
+        };
+      };
+
       // Draw individual crisp click points with glow
       filteredPoints.forEach((pt) => {
-        const nx = typeof pt.normalized_x === 'number' ? pt.normalized_x : 0.5;
-        const ny = typeof pt.normalized_y === 'number' ? pt.normalized_y : 0.5;
+        const { nx, ny } = getNormCoords(pt);
         const cx = nx * width;
         const cy = ny * height;
 

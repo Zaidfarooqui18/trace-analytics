@@ -36,7 +36,7 @@ export function HeatmapPage({ dateRange, isLive }: HeatmapPageProps) {
         if (urlParam) {
           setSelectedPageUrl(urlParam);
         } else if (data.length > 0) {
-          setSelectedPageUrl(data[0].page_url);
+          setSelectedPageUrl((prev) => prev || data[0].page_url);
         }
       })
       .catch((err) => {

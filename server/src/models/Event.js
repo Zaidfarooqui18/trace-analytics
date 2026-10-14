@@ -12,19 +12,16 @@ const EventSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     event_type: {
       type: String,
       required: true,
       enum: ['page_view', 'click', 'custom'],
-      index: true,
     },
     page_url: {
       type: String,
       required: true,
       trim: true,
-      index: true,
     },
     page_path: {
       type: String,
@@ -38,12 +35,10 @@ const EventSchema = new mongoose.Schema(
     timestamp: {
       type: Date,
       required: true,
-      index: true,
     },
     received_at: {
       type: Date,
       default: Date.now,
-      index: true,
     },
     // Click coordinates
     x: { type: Number },

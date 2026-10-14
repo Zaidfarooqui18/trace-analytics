@@ -38,8 +38,10 @@ export function createApp() {
         );
         if (allowed) {
           callback(null, true);
+        } else if (config.nodeEnv === 'development') {
+          callback(null, true);
         } else {
-          callback(null, true); // Allow during dev, log origin
+          callback(new Error(`Origin ${origin} not permitted by CORS policy`));
         }
       },
       credentials: true,
