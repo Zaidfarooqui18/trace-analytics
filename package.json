@@ -1,0 +1,26 @@
+{
+  "name": "trace-analytics",
+  "version": "1.0.0",
+  "description": "Trace Analytics - Lightweight User Analytics Platform tracking webpage interactions, user journeys, and heatmaps.",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,CLIENT,DEMO\" -c \"cyan,magenta,green\" \"npm run dev --prefix server\" \"npm run dev --prefix client\" \"npx --yes serve demo -l 3001 --cors\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "dev:demo": "npx --yes serve demo -l 3001 --cors",
+    "build": "npm run build --prefix client",
+    "seed": "npm run seed --prefix server",
+    "test": "npm test --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "analytics",
+    "session-recording",
+    "heatmap",
+    "causalfunnel"
+  ],
+  "author": "CausalFunnel Candidate",
+  "license": "MIT"
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trace Commerce — Minimalist Essentials</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Tracking Demo Notice Banner -->
+  <div class="tracking-banner">
+    <span class="pulse-dot"></span>
+    <span><strong>Trace Analytics Active:</strong> Anonymous page views and clicks on this demo site are being tracked in real time.</span>
+    <a href="http://localhost:5173" target="_blank" id="banner-dashboard-link">Open Dashboard &rarr;</a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="navbar">
+      <a href="index.html" class="logo" id="brand-logo">
+        <div class="logo-icon">T</div>
+        <span>TRACE COMMERCE</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active" id="nav-home">Home</a></li>
+        <li><a href="products.html" id="nav-products">Products</a></li>
+        <li><a href="product.html" id="nav-featured">Featured Item</a></li>
+        <li><a href="checkout.html" id="nav-checkout">Checkout</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="checkout.html" class="cart-btn" id="header-cart-btn">
+          <span>Bag</span>
+          <span class="cart-badge">1</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Engineered for Clarity & Sound.</h1>
+      <p>Discover the new Studio Wireless Series. Crafted from precision machined aluminum and tailored acoustic fabric.</p>
+      <div class="hero-actions">
+        <a href="product.html" class="btn-primary" id="hero-cta-btn">
+          <span>Explore Aura Studio ($299)</span>
+          <span>&rarr;</span>
+        </a>
+        <a href="products.html" class="btn-secondary" id="hero-secondary-btn">Browse Catalog</a>
+      </div>
+    </section>
+
+    <!-- Categories / Filter chips -->
+    <div class="filter-bar">
+      <button class="chip active" id="filter-all">All Collections</button>
+      <button class="chip" id="filter-audio">Wireless Audio</button>
+      <button class="chip" id="filter-wearables">Wearables</button>
+      <button class="chip" id="filter-desk">Desk Ergonomics</button>
+      <button class="chip" id="filter-accessories">Travel Accessories</button>
+    </div>
+
+    <!-- Featured Products Grid -->
+    <h2 style="font-size: 22px; margin-bottom: 20px; font-weight: 700;">Curated Essentials</h2>
+    <div class="grid">
+      <!-- Product 1 -->
+      <div class="card" id="card-aura-headphone">
+        <div class="card-img-container">
+          <span class="card-badge-tag">Flagship</span>
+          <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.5">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Aura Studio Wireless</h3>
+          <p class="card-desc">Active noise cancelling headphones with 42-hour battery life and spatial audio.</p>
+          <div class="card-footer">
+            <span class="card-price">$299</span>
+            <div style="display: flex; gap: 8px;">
+              <a href="product.html" class="btn-secondary btn-sm" id="view-aura-btn">Details</a>
+              <button class="btn-primary btn-sm" data-action="add-to-cart" data-item="Aura Studio" id="add-aura-btn">Add to Bag</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="card" id="card-lumina-dock">
+        <div class="card-img-container">
+          <span class="card-badge-tag">New</span>
+          <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.5">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Lumina Thunderbolt Dock</h3>
+          <p class="card-desc">Single cable 96W power delivery with dual 4K display outputs and anodized finish.</p>
+          <div class="card-footer">
+            <span class="card-price">$189</span>
+            <button class="btn-primary btn-sm" data-action="add-to-cart" data-item="Lumina Dock" id="add-dock-btn">Add to Bag</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="card" id="card-pulse-keyboard">
+        <div class="card-img-container">
+          <span class="card-badge-tag">Bestseller</span>
+          <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="1.5">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10"></path>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Pulse Mechanical 75%</h3>
+          <p class="card-desc">Gasket-mounted mechanical keyboard with hot-swappable switches and CNC chassis.</p>
+          <div class="card-footer">
+            <span class="card-price">$165</span>
+            <button class="btn-primary btn-sm" data-action="add-to-cart" data-item="Pulse Keyboard" id="add-keyboard-btn">Add to Bag</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="card" id="card-nomad-backpack">
+        <div class="card-img-container">
+          <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5">
+            <path d="M6 20h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-1V4a2 2 0 0 0-2-2h-6a2 2 0 0 0-2 2v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"></path>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">Nomad Weatherproof Pack</h3>
+          <p class="card-desc">24L water-resistant ballistic nylon commuter pack with magnetic Fidlock closures.</p>
+          <div class="card-footer">
+            <span class="card-price">$145</span>
+            <button class="btn-primary btn-sm" data-action="add-to-cart" data-item="Nomad Pack" id="add-backpack-btn">Add to Bag</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Trace Commerce Demo Store &bull; Powered by Trace Analytics (CausalFunnel Evaluation)</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <!-- Client Tracking Script -->
+  <script src="http://localhost:5000/tracker.js" data-api="http://localhost:5000" async></script>
+</body>
+</html>

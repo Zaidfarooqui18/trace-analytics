@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura Studio Wireless Headphones — Trace Commerce</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="tracking-banner">
+    <span class="pulse-dot"></span>
+    <span><strong>Trace Analytics Active:</strong> Click coordinates and page views on this page are recorded.</span>
+    <a href="http://localhost:5173" target="_blank" id="banner-dashboard-link">Open Dashboard &rarr;</a>
+  </div>
+
+  <header>
+    <div class="navbar">
+      <a href="index.html" class="logo" id="brand-logo">
+        <div class="logo-icon">T</div>
+        <span>TRACE COMMERCE</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" id="nav-home">Home</a></li>
+        <li><a href="products.html" id="nav-products">Products</a></li>
+        <li><a href="product.html" class="active" id="nav-featured">Featured Item</a></li>
+        <li><a href="checkout.html" id="nav-checkout">Checkout</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="checkout.html" class="cart-btn" id="header-cart-btn">
+          <span>Bag</span>
+          <span class="cart-badge">1</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div style="margin-bottom: 24px;">
+      <a href="products.html" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;" id="breadcrumb-back">&larr; Back to Catalog</a>
+    </div>
+
+    <div class="product-layout">
+      <!-- Media Gallery -->
+      <div>
+        <div class="gallery-main" id="gallery-viewport">
+          <svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.5">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+          </svg>
+        </div>
+        <div class="gallery-thumbs">
+          <button class="thumb-btn active" id="thumb-angle-1">
+            <span style="font-size: 12px; color: var(--text-secondary);">Angle 1</span>
+          </button>
+          <button class="thumb-btn" id="thumb-angle-2">
+            <span style="font-size: 12px; color: var(--text-secondary);">Angle 2</span>
+          </button>
+          <button class="thumb-btn" id="thumb-angle-3">
+            <span style="font-size: 12px; color: var(--text-secondary);">Case</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Info & Buy Box -->
+      <div class="product-info">
+        <span class="card-badge-tag" style="position: static; display: inline-block; margin-bottom: 12px;">Flagship Series</span>
+        <h1 id="product-heading">Aura Studio Wireless Headphones</h1>
+        <div class="rating-row">
+          <span>★★★★★</span>
+          <span style="color: var(--text-secondary);">(148 Verified Reviews)</span>
+          <span style="color: var(--text-muted);">&bull;</span>
+          <span style="color: #34d399; font-weight: 600;">In Stock</span>
+        </div>
+
+        <div class="price-tag" id="product-price-label">$299.00</div>
+
+        <p style="color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6;">
+          Featuring bespoke 40mm beryllium drivers, active hybrid noise cancellation with transparency mode, and ultra-plush memory foam ear cups for all-day comfort.
+        </p>
+
+        <!-- Color Options -->
+        <div class="option-group">
+          <div class="option-label">Color: <span id="selected-color-label" style="color: var(--text-primary);">Space Grey</span></div>
+          <div class="swatches">
+            <button class="swatch active" style="background: #334155;" data-color="Space Grey" id="swatch-grey" title="Space Grey"></button>
+            <button class="swatch" style="background: #0f172a;" data-color="Matte Black" id="swatch-black" title="Matte Black"></button>
+            <button class="swatch" style="background: #cbd5e1;" data-color="Silver Mist" id="swatch-silver" title="Silver Mist"></button>
+          </div>
+        </div>
+
+        <!-- Quantity & Actions -->
+        <div class="option-group">
+          <div class="option-label">Quantity</div>
+          <div class="qty-control">
+            <button class="qty-btn" id="qty-minus">-</button>
+            <span class="qty-val" id="qty-val">1</span>
+            <button class="qty-btn" id="qty-plus">+</button>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn-primary" data-action="add-to-cart" data-item="Aura Studio" id="add-to-cart-btn" style="flex: 1; justify-content: center; padding: 14px;">
+            Add to Bag — $299
+          </button>
+          <a href="checkout.html" class="btn-secondary" id="buy-now-btn" style="padding: 14px 28px;">
+            Buy Now
+          </a>
+        </div>
+
+        <!-- Features list -->
+        <div style="margin-top: 36px; border-top: 1px solid var(--border-color); padding-top: 24px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px; color: var(--text-secondary);">
+            <div>⚡ 42-Hour Battery Life</div>
+            <div>🎧 Lossless Audio Codec</div>
+            <div>🛡️ 2-Year Full Warranty</div>
+            <div>📦 Free Worldwide Delivery</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Trace Commerce Demo Store &bull; Powered by Trace Analytics</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="http://localhost:5000/tracker.js" data-api="http://localhost:5000" async></script>
+</body>
+</html>
