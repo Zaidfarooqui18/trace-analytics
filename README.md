@@ -15,7 +15,8 @@ Built as a submission for the **Full Stack Engineer Intern** role at **CausalFun
 - **Interactive Chronological User Journeys**: Ordered visual event timelines displaying relative timestamps, click coordinates, target element selectors, and a step-by-step **Session Replay-Lite** animation player.
 - **Coordinate-Normalized Visual Heatmaps**: Canvas-rendered heatmaps supporting **Heat Gradient Blobs**, **Point Dots**, and **Grid Density** modes. Normalized coordinates (`0.0 – 1.0`) guarantee that click dots scale responsively across varying screen resolutions.
 - **Rage-Click Detection**: Automatic detection of frustration patterns (3+ rapid clicks within 1,000ms within a 35px radius) flagged in both session timelines and heatmaps.
-- **Apple & Material 3 Inspired Design**: Clean typography (Inter), glassmorphism header, 8px grid, smooth dark/light mode toggle with system preference detection, and `Cmd/Ctrl + K` global command palette.
+- **Soft UI Evolution Design Language**: Clean, accessible evolution of soft UI featuring comfortable light neutral surfaces (`#EEF3F8`), white cards with subtle multi-layer dual-direction shadows, muted pastel accents (`#87CEEB`, `#90EE90`, `#FFB6C1`, `#DDA0DD`, `#F0E68C`), inset inputs, and WCAG-compliant high-contrast typography (`#1E293B`) across both the demo storefront and analytics dashboard.
+- **Authoritative Shopping Cart Engine**: Single source of truth (`demo/cart.js`) with localStorage persistence, catalog validation, derived badge counters (`sum(item.quantity)`), integer-cent pricing math, dynamic line items, and responsive checkout with graceful empty states.
 - **Zero-Friction Evaluation**: Connects out of the box to MongoDB Atlas or local MongoDB. If neither is running, it automatically falls back to an in-memory MongoDB instance so reviewers can test the application in seconds without configuration blockers!
 
 ---
