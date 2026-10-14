@@ -7,12 +7,14 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Tracking Notice Banner -->
   <div class="tracking-banner">
     <span class="pulse-dot"></span>
-    <span><strong>Trace Analytics Active:</strong> Click coordinates and page views on this page are recorded.</span>
+    <span><strong>Trace Analytics Active:</strong> Anonymous interaction events and clicks on this page are captured.</span>
     <a href="http://localhost:5173" target="_blank" id="banner-dashboard-link">Open Dashboard &rarr;</a>
   </div>
 
+  <!-- Header -->
   <header>
     <div class="navbar">
       <a href="index.html" class="logo" id="brand-logo">
@@ -26,104 +28,144 @@
         <li><a href="checkout.html" id="nav-checkout">Checkout</a></li>
       </ul>
       <div class="nav-actions">
-        <a href="checkout.html" class="cart-btn" id="header-cart-btn">
+        <a href="checkout.html" class="cart-btn" id="header-cart-btn" aria-label="Shopping Bag">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
           <span>Bag</span>
-          <span class="cart-badge">1</span>
+          <span class="cart-badge">0</span>
         </a>
       </div>
     </div>
   </header>
 
-  <main>
-    <div style="margin-bottom: 24px;">
-      <a href="products.html" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;" id="breadcrumb-back">&larr; Back to Catalog</a>
-    </div>
+  <!-- Main Content -->
+  <main class="page-container">
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="products.html" class="breadcrumb-link" id="breadcrumb-back">
+        &larr; Back to Catalog
+      </a>
+    </nav>
 
     <div class="product-layout">
       <!-- Media Gallery -->
-      <div>
+      <section class="gallery-column">
         <div class="gallery-main" id="gallery-viewport">
-          <svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.5">
-            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-          </svg>
+          <div class="gallery-icon-wrap" style="background: rgba(135, 206, 235, 0.22);">
+            <svg width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+            </svg>
+          </div>
         </div>
-        <div class="gallery-thumbs">
-          <button class="thumb-btn active" id="thumb-angle-1">
-            <span style="font-size: 12px; color: var(--text-secondary);">Angle 1</span>
+        <div class="gallery-thumbs" role="tablist" aria-label="Product Images">
+          <button class="thumb-btn active" id="thumb-angle-1" role="tab" aria-selected="true">
+            <span>Front View</span>
           </button>
-          <button class="thumb-btn" id="thumb-angle-2">
-            <span style="font-size: 12px; color: var(--text-secondary);">Angle 2</span>
+          <button class="thumb-btn" id="thumb-angle-2" role="tab" aria-selected="false">
+            <span>Profile 45°</span>
           </button>
-          <button class="thumb-btn" id="thumb-angle-3">
-            <span style="font-size: 12px; color: var(--text-secondary);">Case</span>
+          <button class="thumb-btn" id="thumb-angle-3" role="tab" aria-selected="false">
+            <span>Travel Case</span>
           </button>
         </div>
-      </div>
+      </section>
 
       <!-- Info & Buy Box -->
-      <div class="product-info">
-        <span class="card-badge-tag" style="position: static; display: inline-block; margin-bottom: 12px;">Flagship Series</span>
-        <h1 id="product-heading">Aura Studio Wireless Headphones</h1>
-        <div class="rating-row">
-          <span>★★★★★</span>
-          <span style="color: var(--text-secondary);">(148 Verified Reviews)</span>
-          <span style="color: var(--text-muted);">&bull;</span>
-          <span style="color: #34d399; font-weight: 600;">In Stock</span>
+      <section class="product-info-card">
+        <div class="product-badge-row">
+          <span class="soft-badge pastel-sky">Flagship Series</span>
+          <span class="soft-badge pastel-green">In Stock &bull; Ships Today</span>
         </div>
 
-        <div class="price-tag" id="product-price-label">$299.00</div>
+        <h1 id="product-heading" class="product-title">Aura Studio Wireless Headphones</h1>
 
-        <p style="color: var(--text-secondary); margin-bottom: 28px; line-height: 1.6;">
-          Featuring bespoke 40mm beryllium drivers, active hybrid noise cancellation with transparency mode, and ultra-plush memory foam ear cups for all-day comfort.
+        <div class="rating-row">
+          <span class="rating-stars" aria-label="5 out of 5 stars">★★★★★</span>
+          <span class="rating-count">(148 Verified Audiophile Reviews)</span>
+        </div>
+
+        <div class="price-container">
+          <span class="price-val" id="product-price-label">$299.00</span>
+          <span class="price-shipping-note">Free express delivery worldwide</span>
+        </div>
+
+        <p class="product-description">
+          Featuring custom 40mm acoustic beryllium drivers, active hybrid noise cancellation with seamless transparency mode, and ultra-breathable memory foam ear cushions engineered for long creative sessions.
         </p>
 
         <!-- Color Options -->
         <div class="option-group">
-          <div class="option-label">Color: <span id="selected-color-label" style="color: var(--text-primary);">Space Grey</span></div>
-          <div class="swatches">
-            <button class="swatch active" style="background: #334155;" data-color="Space Grey" id="swatch-grey" title="Space Grey"></button>
-            <button class="swatch" style="background: #0f172a;" data-color="Matte Black" id="swatch-black" title="Matte Black"></button>
-            <button class="swatch" style="background: #cbd5e1;" data-color="Silver Mist" id="swatch-silver" title="Silver Mist"></button>
+          <div class="option-label">
+            <span>Color Finish:</span>
+            <strong id="selected-color-label">Space Grey</strong>
+          </div>
+          <div class="swatches" role="radiogroup" aria-label="Select Finish">
+            <button class="swatch active" style="background: #334155;" data-color="Space Grey" id="swatch-grey" title="Space Grey" role="radio" aria-checked="true"></button>
+            <button class="swatch" style="background: #0f172a;" data-color="Matte Black" id="swatch-black" title="Matte Black" role="radio" aria-checked="false"></button>
+            <button class="swatch" style="background: #cbd5e1;" data-color="Silver Mist" id="swatch-silver" title="Silver Mist" role="radio" aria-checked="false"></button>
           </div>
         </div>
 
-        <!-- Quantity & Actions -->
+        <!-- Quantity Stepper -->
         <div class="option-group">
           <div class="option-label">Quantity</div>
           <div class="qty-control">
-            <button class="qty-btn" id="qty-minus">-</button>
+            <button class="qty-btn" id="qty-minus" aria-label="Decrease quantity">−</button>
             <span class="qty-val" id="qty-val">1</span>
-            <button class="qty-btn" id="qty-plus">+</button>
+            <button class="qty-btn" id="qty-plus" aria-label="Increase quantity">+</button>
           </div>
         </div>
 
+        <!-- Action Row -->
         <div class="action-row">
-          <button class="btn-primary" data-action="add-to-cart" data-item="Aura Studio" id="add-to-cart-btn" style="flex: 1; justify-content: center; padding: 14px;">
-            Add to Bag — $299
+          <button class="btn-primary btn-add-bag" data-action="add-to-cart" data-product-id="aura-studio-wireless" id="add-to-cart-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span>Add to Bag — $299.00</span>
           </button>
-          <a href="checkout.html" class="btn-secondary" id="buy-now-btn" style="padding: 14px 28px;">
+          <a href="checkout.html" class="btn-secondary" id="buy-now-btn">
             Buy Now
           </a>
         </div>
 
-        <!-- Features list -->
-        <div style="margin-top: 36px; border-top: 1px solid var(--border-color); padding-top: 24px;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 13px; color: var(--text-secondary);">
-            <div>⚡ 42-Hour Battery Life</div>
-            <div>🎧 Lossless Audio Codec</div>
-            <div>🛡️ 2-Year Full Warranty</div>
-            <div>📦 Free Worldwide Delivery</div>
+        <!-- Feature List -->
+        <div class="features-grid">
+          <div class="feature-item">
+            <span class="feature-icon">⚡</span>
+            <span>42-Hour Fast-Charge Battery</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🎧</span>
+            <span>Lossless High-Resolution Codec</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🛡️</span>
+            <span>2-Year Comprehensive Warranty</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">📦</span>
+            <span>Carbon-Neutral Express Shipping</span>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <p>&copy; 2026 Trace Commerce Demo Store &bull; Powered by Trace Analytics</p>
+    <div class="footer-inner">
+      <p>&copy; 2026 Trace Commerce &bull; Designed in the Soft UI Evolution aesthetic &bull; Powered by Trace Analytics</p>
+    </div>
   </footer>
 
+  <!-- Scripts -->
+  <script src="cart.js"></script>
   <script src="script.js"></script>
   <script src="http://localhost:5000/tracker.js" data-api="http://localhost:5000" async></script>
 </body>

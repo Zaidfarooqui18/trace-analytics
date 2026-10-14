@@ -65,36 +65,42 @@ export function OverviewPage({ dateRange, isLive }: OverviewPageProps) {
               value={formatNumber(data.total_sessions)}
               subtitle="Active & completed"
               icon={Users}
+              pastelVariant="sky"
             />
             <MetricCard
               title="Total Events"
               value={formatNumber(data.total_events)}
               subtitle="Views & clicks"
               icon={Activity}
+              pastelVariant="pink"
             />
             <MetricCard
               title="Page Views"
               value={formatNumber(data.page_views)}
               subtitle="Distinct loads"
               icon={Eye}
+              pastelVariant="green"
             />
             <MetricCard
               title="User Clicks"
               value={formatNumber(data.clicks)}
               subtitle="Tracked coordinates"
               icon={MousePointer}
+              pastelVariant="purple"
             />
             <MetricCard
               title="Avg Duration"
               value={formatDuration(data.avg_session_duration_seconds * 1000)}
               subtitle="Time per session"
               icon={Clock}
+              pastelVariant="yellow"
             />
             <MetricCard
               title="Events / Session"
               value={data.avg_events_per_session.toFixed(1)}
               subtitle="Engagement depth"
               icon={Layers}
+              pastelVariant="sky"
             />
           </>
         )}

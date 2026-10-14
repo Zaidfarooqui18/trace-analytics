@@ -4,17 +4,17 @@
 
 @layer base {
   :root {
-    --color-bg: #f8fafc;
+    --color-bg: #EEF3F8;
     --color-card: #ffffff;
     --color-border: #e2e8f0;
-    --color-text: #0f172a;
-    --color-muted: #64748b;
+    --color-text: #1E293B;
+    --color-muted: #64748B;
   }
 
   .dark {
-    --color-bg: #090d16;
-    --color-card: #111726;
-    --color-border: #1e293b;
+    --color-bg: #0f172a;
+    --color-card: #1e293b;
+    --color-border: #334155;
     --color-text: #f8fafc;
     --color-muted: #94a3b8;
   }

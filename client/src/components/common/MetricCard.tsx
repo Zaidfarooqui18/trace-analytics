@@ -6,6 +6,7 @@ interface MetricCardProps {
   value: string | number;
   subtitle?: string;
   icon: React.ElementType;
+  pastelVariant?: 'sky' | 'green' | 'pink' | 'purple' | 'yellow';
   trend?: {
     value: string;
     isPositive?: boolean;
@@ -18,22 +19,31 @@ export function MetricCard({
   value,
   subtitle,
   icon: Icon,
+  pastelVariant = 'sky',
   trend,
   className,
 }: MetricCardProps) {
+  const pastelStyles = {
+    sky: 'bg-[#87CEEB]/20 text-[#0284c7] dark:bg-[#87CEEB]/10 dark:text-[#38bdf8]',
+    green: 'bg-[#90EE90]/25 text-[#16a34a] dark:bg-[#90EE90]/10 dark:text-[#4ade80]',
+    pink: 'bg-[#FFB6C1]/25 text-[#db2777] dark:bg-[#FFB6C1]/10 dark:text-[#f472b6]',
+    purple: 'bg-[#DDA0DD]/25 text-[#9333ea] dark:bg-[#DDA0DD]/10 dark:text-[#c084fc]',
+    yellow: 'bg-[#F0E68C]/30 text-[#b45309] dark:bg-[#F0E68C]/10 dark:text-[#fbbf24]',
+  };
+
   return (
     <div
       className={cn(
-        'p-6 rounded-2xl bg-white dark:bg-surface-dark-card border border-slate-200/80 dark:border-slate-800 shadow-card hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200',
+        'p-5 rounded-2xl bg-white dark:bg-surface-dark-card border border-slate-200/85 dark:border-slate-800 shadow-card hover:-translate-y-0.5 hover:shadow-card-hover transition-all duration-200',
         className
       )}
     >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold tracking-wide uppercase text-slate-500 dark:text-slate-400">
+        <span className="text-[11px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">
           {title}
         </span>
-        <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 text-brand-600 dark:text-brand-400">
-          <Icon className="w-5 h-5" />
+        <div className={cn('p-2.5 rounded-xl transition-transform hover:scale-105', pastelStyles[pastelVariant])}>
+          <Icon className="w-4 h-4" />
         </div>
       </div>
 
