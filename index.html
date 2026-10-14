@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trace Analytics — Real-Time User Journey & Heatmap Platform</title>
+  <meta name="description" content="Trace Analytics - Lightweight, real-time user interaction analytics platform with session journey replays and coordinate-normalized click heatmaps." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #EEF3F8;
+      --card-bg: #FFFFFF;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --brand: #2563EB;
+      --brand-hover: #1D4ED8;
+      --brand-light: #EFF6FF;
+      --border: rgba(226, 232, 240, 0.9);
+      --shadow-soft: 8px 8px 24px rgba(166, 180, 200, 0.35), -8px -8px 24px rgba(255, 255, 255, 0.9);
+      --shadow-inset: inset 3px 3px 6px rgba(166, 180, 200, 0.25), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation */
+    header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #2563EB, #3B82F6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 900;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto 60px;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: #DBEAFE;
+      color: #1D4ED8;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-title {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: #0F172A;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #2563EB, #06B6D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      font-weight: 400;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* CTA Button Group */
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      color: white;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      background: #F8FAFC;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-main);
+      border: 1.5px solid #CBD5E1;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.6);
+      border-color: #94A3B8;
+    }
+
+    /* Feature Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 28px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 12px 12px 30px rgba(166, 180, 200, 0.45), -12px -12px 30px rgba(255, 255, 255, 0.95);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 18px;
+    }
+
+    .icon-blue { background: #DBEAFE; color: #2563EB; }
+    .icon-green { background: #D1FAE5; color: #059669; }
+    .icon-purple { background: #EDE9FE; color: #7C3AED; }
+    .icon-pink { background: #FCE7F3; color: #DB2777; }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #0F172A;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* Deployment Notice Box */
+    .deploy-box {
+      background: linear-gradient(135deg, #FFFFFF, #F8FAFC);
+      border-radius: var(--radius);
+      padding: 36px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 60px;
+    }
+
+    .deploy-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .deploy-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0F172A;
+    }
+
+    .code-snippet {
+      background: #0F172A;
+      color: #F8FAFC;
+      padding: 18px 24px;
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      overflow-x: auto;
+      margin: 18px 0;
+      line-height: 1.6;
+    }
+
+    /* Architecture List */
+    .arch-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .arch-item {
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 12px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      font-size: 0.88rem;
+    }
+
+    .arch-item strong {
+      display: block;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.7);
+      padding: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="./" class="brand">
+        <div class="brand-icon">T</div>
+        <span>Trace Analytics</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span class="badge-status">
+          <span class="badge-dot"></span>
+          <span>Engine v1.0 Ready</span>
+        </span>
+        <a href="https://github.com/Zaidfarooqui18/trace-analytics" target="_blank" rel="noreferrer" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem;">
+          GitHub Repository
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-tag">CausalFunnel Full Stack Engineer Internship</div>
+      <h1 class="hero-title">
+        Understand Every <span>User Journey</span> With Precision
+      </h1>
+      <p class="hero-subtitle">
+        A lightweight, privacy-focused, real-time user interaction analytics platform featuring interactive session timelines, coordinate-normalized click heatmaps, and full-fidelity CSV export.
+      </p>
+
+      <div class="cta-group">
+        <a href="./demo/index.html" class="btn btn-primary">
+          <span>🛍️ Open Demo Store</span>
+          <span>&rarr;</span>
+        </a>
+        <a href="https://github.com/Zaidfarooqui18/trace-analytics#deploy-to-vercel-recommended" target="_blank" rel="noreferrer" class="btn btn-secondary">
+          <span>🚀 Deploy on Vercel</span>
+        </a>
+        <a href="https://github.com/Zaidfarooqui18/trace-analytics" target="_blank" rel="noreferrer" class="btn btn-outline">
+          <span>⭐ Star on GitHub</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Core Features Grid -->
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon icon-blue">⚡</div>
+        <h3 class="card-title">&lt; 3 KB Interaction Tracker</h3>
+        <p class="card-desc">
+          Standalone vanilla JavaScript tracking script that collects page views, clicks, rage clicks, and screen viewports without framework dependencies or site slowdowns.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-green">🗺️</div>
+        <h3 class="card-title">Normalized Click Heatmaps</h3>
+        <p class="card-desc">
+          Canvas-rendered click heatmaps in Blobs, Point Dots, and Grid Density modes. Coordinate normalization guarantees accuracy across mobile, tablet, and desktop viewports.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-purple">⏱️</div>
+        <h3 class="card-title">Chronological User Journeys</h3>
+        <p class="card-desc">
+          Trace visitor sessions step-by-step from landing page to checkout. Includes Session Replay-Lite visual playback and frustration rage-click markers.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-pink">📊</div>
+        <h3 class="card-title">Sessions Explorer & CSV Export</h3>
+        <p class="card-desc">
+          Filter sessions across 24h, 7d, 30d, or All-Time. Search by UUID, filter by device, and export the complete filtered result set as clean UTF-8 CSV spreadsheet files.
+        </p>
+      </div>
+    </div>
+
+    <!-- Deployment & Architecture Notice -->
+    <div class="deploy-box">
+      <div class="deploy-header">
+        <span style="font-size: 1.5rem;">☁️</span>
+        <h2 class="deploy-title">Live Full-Stack Deployment on Vercel</h2>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+        Trace Analytics consists of a <strong>React 18 Dashboard</strong>, a <strong>Node.js Express REST API</strong>, and a <strong>MongoDB Database</strong>. While GitHub Pages serves static files (like this portal and the Demo Store), full-stack data ingestion and session aggregation run natively on Vercel with serverless functions!
+      </p>
+
+      <div class="code-snippet">
+# Deploy to Vercel in 60 seconds:
+1. Import repository on vercel.com
+2. Framework Preset: Vite
+3. Root Directory: ./ (monorepo root)
+4. Add Environment Variable: MONGODB_URI = your-mongodb-atlas-uri
+5. Click Deploy!
+      </div>
+
+      <div class="arch-list">
+        <div class="arch-item">
+          <strong>Frontend Dashboard</strong>
+          React 18, Vite, TypeScript, Tailwind CSS, Recharts
+        </div>
+        <div class="arch-item">
+          <strong>Backend API</strong>
+          Express.js, Mongoose 8, Zod, Rate Limiting, Serverless
+        </div>
+        <div class="arch-item">
+          <strong>Demo Storefront</strong>
+          Trace Commerce, Soft UI Evolution, Cart Engine
+        </div>
+        <div class="arch-item">
+          <strong>Database</strong>
+          MongoDB Atlas / In-Memory Zero-Config Mode
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+      <p>&copy; 2026 Trace Analytics &bull; CausalFunnel Full Stack Engineer Internship Assignment</p>
+      <p>
+        <a href="./demo/index.html">Demo Store</a> &bull;
+        <a href="https://github.com/Zaidfarooqui18/trace-analytics" target="_blank" rel="noreferrer">GitHub</a> &bull;
+        <a href="https://github.com/Zaidfarooqui18/trace-analytics#readme" target="_blank" rel="noreferrer">README Documentation</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

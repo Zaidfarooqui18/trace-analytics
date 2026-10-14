@@ -2,15 +2,29 @@
   "name": "trace-analytics",
   "version": "1.0.0",
   "description": "Trace Analytics - Lightweight User Analytics Platform tracking webpage interactions, user journeys, and heatmaps.",
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "install:all": "npm install && npm install --prefix server && npm install --prefix client",
     "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,CLIENT,DEMO\" -c \"cyan,magenta,green\" \"npm run dev --prefix server\" \"npm run dev --prefix client\" \"npx --yes serve demo -l 3001 --cors\"",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "dev:demo": "npx --yes serve demo -l 3001 --cors",
-    "build": "npm run build --prefix client",
+    "build": "npm run build:all",
+    "build:all": "npm run build --prefix client && node scripts/prepare-dist.cjs",
     "seed": "npm run seed --prefix server",
     "test": "npm test --prefix server"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "mongoose": "^8.9.5",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

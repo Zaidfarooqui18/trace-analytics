@@ -39,6 +39,15 @@
     // Remove trailing slash
     apiBaseUrl = apiBaseUrl.replace(/\/+$/, '');
 
+    // If data-api pointed to localhost but page is hosted in production, fallback to current origin
+    var isLocalEnv =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === '';
+    if (!isLocalEnv && apiBaseUrl && apiBaseUrl.includes('localhost')) {
+      apiBaseUrl = window.location.origin;
+    }
+
     var respectDnt = currentScript && currentScript.getAttribute('data-dnt') === 'true';
     if (respectDnt && (navigator.doNotTrack === '1' || window.doNotTrack === '1')) {
       if (window.console && console.info) {

@@ -4,6 +4,14 @@
 
 Built as a submission for the **Full Stack Engineer Intern** role at **CausalFunnel**.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FZaidfarooqui18%2Ftrace-analytics&env=MONGODB_URI)
+
+🔗 **Quick Links**:
+- 🌐 **Live Demo Portal & Store**: [https://zaidfarooqui18.github.io/trace-analytics/](https://zaidfarooqui18.github.io/trace-analytics/)
+- 🛍️ **Demo Store Direct**: [https://zaidfarooqui18.github.io/trace-analytics/demo/index.html](https://zaidfarooqui18.github.io/trace-analytics/demo/index.html)
+- 🚀 **1-Click Vercel Full-Stack Deployment Guide**: [Jump to Instructions](#option-a-unified-full-stack-deployment-on-vercel-recommended)
+- 🧪 **Automated Tests**: 28 passing tests (`npm test --prefix server`)
+
 ---
 
 ## 🌟 Executive Summary & Key Highlights
@@ -432,23 +440,26 @@ All endpoints return structured JSON with consistent error formatting.
 
 ## 🧪 Testing & Quality Checks
 
-Run the automated test suite:
+Run the automated test suite covering cart math, canonical URL normalization, Zod event validation, sessions aggregation, and CSV export:
 ```bash
-# Run backend validation and URL normalization tests
 npm test --prefix server
 ```
 
-Expected output:
+Actual verified test output:
 ```
  ✓ tests/url.test.js (5 tests)
+ ✓ tests/cart.test.js (6 tests)
  ✓ tests/validation.test.js (5 tests)
- Test Files  2 passed (2)
-      Tests  10 passed (10)
+ ✓ tests/sessions.test.js (12 tests)
+
+ Test Files  4 passed (4)
+      Tests  28 passed (28)
+   Duration  889ms
 ```
 
-Run TypeScript strict checks and production build:
+Run TypeScript strict checks and production distribution build:
 ```bash
-npm run build --prefix client
+npm run build
 ```
 
 ---
@@ -467,26 +478,83 @@ docker-compose up --build
 
 ---
 
-## 🚀 Cloud Deployment Instructions
+## 🚀 Live Cloud Deployment Guide
 
-### Deploy Backend to Render / Railway
-1. Push your repository to GitHub.
-2. In [Render](https://render.com) or [Railway](https://railway.app), create a new **Web Service**.
-3. Set Root Directory to `server`.
-4. Build Command: `npm install`
-5. Start Command: `npm start`
-6. Set Environment Variables:
+Trace Analytics is a full-stack application comprising a **React 18 Dashboard**, a **Node.js Express REST API**, a **Standalone Tracker Script**, and a **MongoDB Database**.
+
+### ⚠️ Note on GitHub Pages vs. Vercel
+
+> **Why did GitHub Pages show the README?**
+> GitHub Pages is **strictly static hosting** (HTML/CSS/JS). By default, if a repository root does not contain an `index.html` file, GitHub's Jekyll engine converts `README.md` into an HTML page. Furthermore, GitHub Pages **cannot execute Node.js Express server code or connect to MongoDB**.
+> 
+> **How this repository solves it:**
+> 1. We added an interactive `index.html` (Live Demo Portal) and `.nojekyll` to the repository root. If GitHub Pages is enabled, it now loads an interactive portal and demo store instead of the raw README.
+> 2. For the **complete full-stack application** (React Dashboard + Real-Time API + MongoDB + CSV Export), follow the 1-click **Vercel** instructions below.
+
+---
+
+### Option A: Unified Full-Stack Deployment on Vercel (Recommended)
+
+This repository includes a pre-configured `vercel.json` and a Serverless Function bridge (`api/index.js`). This allows Vercel to host **both** the Vite React SPA frontend and the Express REST API under a single unified domain with zero CORS issues!
+
+#### Step 1: Push Repository to GitHub
+Ensure your latest code is pushed to your GitHub repository:
+```bash
+git push origin main
+```
+
+#### Step 2: Create a Free MongoDB Atlas Database
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and sign in.
+2. Create a free **M0 Shared Cluster**.
+3. Under **Database Access**, create a user (e.g. `trace_admin`) and password.
+4. Under **Network Access**, add IP `0.0.0.0/0` (Allow access from anywhere).
+5. Click **Connect** → **Drivers** (Node.js) and copy your connection string:
+   ```
+   mongodb+srv://<username>:<password>@cluster0.xxx.mongodb.net/trace_analytics?retryWrites=true&w=majority
+   ```
+
+#### Step 3: Deploy on Vercel
+1. Go to [vercel.com](https://vercel.com) and click **"Add New Project"**.
+2. Select your `trace-analytics` GitHub repository and click **Import**.
+3. Leave **Root Directory** as `./` (monorepo root).
+4. Vercel automatically detects `vercel.json`:
+   - **Framework Preset**: `Vite` (or `Other`)
+   - **Build Command**: `npm run build:all`
+   - **Output Directory**: `client/dist`
+5. In **Environment Variables**, add:
+   - `MONGODB_URI` = `mongodb+srv://<user>:<password>@cluster0.xxx.mongodb.net/trace_analytics?retryWrites=true&w=majority`
+   - `AUTO_SEED` = `true` *(Optional: automatically seeds 20 realistic visitor sessions on first boot)*
+6. Click **Deploy**!
+
+In ~60 seconds, your project will be live with high-performance global CDN caching and serverless API execution:
+- 📊 **Analytics Dashboard**: `https://your-project.vercel.app/`
+- 📋 **Sessions Explorer & CSV Export**: `https://your-project.vercel.app/sessions`
+- 🛍️ **Demo Store**: `https://your-project.vercel.app/demo/index.html`
+- 📡 **Tracker Script**: `https://your-project.vercel.app/tracker.js`
+- 🔌 **REST API**: `https://your-project.vercel.app/api/*`
+
+---
+
+### Option B: Two-Tier Deployment (Frontend on Vercel + Backend on Render/Railway)
+
+If you prefer running a dedicated 24/7 background process for the Express backend:
+
+#### 1. Deploy Backend to Render or Railway
+1. In [Render](https://render.com) or [Railway](https://railway.app), create a new **Web Service** from your GitHub repo.
+2. Set **Root Directory** to `server`.
+3. Build Command: `npm install`
+4. Start Command: `npm start`
+5. Set Environment Variables:
    - `PORT`: `5000`
    - `NODE_ENV`: `production`
-   - `MONGODB_URI`: Your MongoDB Atlas connection string.
-   - `CORS_ORIGINS`: Your deployed frontend URL.
+   - `MONGODB_URI`: Your MongoDB Atlas connection URI.
+   - `CORS_ORIGINS`: Your Vercel frontend URL.
 
-### Deploy Frontend to Vercel
-1. In [Vercel](https://vercel.com), import your repository.
-2. Set Root Directory to `client`.
-3. Set Framework Preset to `Vite`.
-4. Set Environment Variable:
-   - `VITE_API_BASE_URL`: The URL of your deployed backend (e.g. `https://api.yourdomain.com`).
+#### 2. Deploy Frontend to Vercel
+1. In Vercel, import the repository with **Root Directory** set to `client`.
+2. Framework Preset: `Vite`.
+3. Add Environment Variable:
+   - `VITE_API_BASE_URL`: `https://your-backend.onrender.com`
 
 ---
 

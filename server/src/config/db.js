@@ -4,7 +4,11 @@ import { config } from './env.js';
 let memoryServer = null;
 
 export async function connectDb() {
-  const uri = config.mongodbUri;
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  const uri = config.mongodbUri || process.env.MONGODB_URI;
 
   if (uri) {
     try {
@@ -16,11 +20,17 @@ export async function connectDb() {
       return mongoose.connection;
     } catch (err) {
       console.warn(`[Database] Failed to connect to configured URI (${err.message}).`);
-      if (config.nodeEnv === 'production') {
+      if (config.nodeEnv === 'production' || process.env.VERCEL) {
         throw err;
       }
       console.log('[Database] Falling back to automatic in-memory MongoDB for seamless development...');
     }
+  }
+
+  if (process.env.VERCEL || config.nodeEnv === 'production') {
+    throw new Error(
+      'MONGODB_URI is required when running in production or on Vercel. Please set MONGODB_URI in your Vercel Project Environment Variables.'
+    );
   }
 
   // Fallback to in-memory MongoDB for seamless zero-config local evaluation
