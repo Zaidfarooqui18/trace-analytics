@@ -15,8 +15,17 @@ export async function getSessions({
 
   if (startDate || endDate) {
     matchStage.timestamp = {};
-    if (startDate) matchStage.timestamp.$gte = new Date(startDate);
-    if (endDate) matchStage.timestamp.$lte = new Date(endDate);
+    if (startDate) {
+      const d = new Date(startDate);
+      if (!isNaN(d.getTime())) matchStage.timestamp.$gte = d;
+    }
+    if (endDate) {
+      const d = new Date(endDate);
+      if (!isNaN(d.getTime())) matchStage.timestamp.$lte = d;
+    }
+    if (Object.keys(matchStage.timestamp).length === 0) {
+      delete matchStage.timestamp;
+    }
   }
 
   if (device && device !== 'all') {
@@ -38,6 +47,7 @@ export async function getSessions({
 
   const pipeline = [
     { $match: matchStage },
+    { $sort: { timestamp: 1 } },
     {
       $group: {
         _id: '$session_id',
@@ -99,6 +109,95 @@ export async function getSessions({
       totalPages: Math.ceil(total / limit) || 1,
     },
   };
+}
+
+export async function getAllSessionsForExport({
+  search,
+  sortBy = 'last_seen',
+  sortOrder = 'desc',
+  startDate,
+  endDate,
+  device,
+  limit = 10000,
+}) {
+  const matchStage = {};
+
+  if (startDate || endDate) {
+    matchStage.timestamp = {};
+    if (startDate) {
+      const d = new Date(startDate);
+      if (!isNaN(d.getTime())) matchStage.timestamp.$gte = d;
+    }
+    if (endDate) {
+      const d = new Date(endDate);
+      if (!isNaN(d.getTime())) matchStage.timestamp.$lte = d;
+    }
+    if (Object.keys(matchStage.timestamp).length === 0) {
+      delete matchStage.timestamp;
+    }
+  }
+
+  if (device && device !== 'all') {
+    matchStage['device.type'] = device;
+  }
+
+  if (search) {
+    matchStage.session_id = { $regex: search, $options: 'i' };
+  }
+
+  const sortDirection = sortOrder === 'asc' ? 1 : -1;
+  const sortMap = {
+    last_seen: { last_seen: sortDirection },
+    first_seen: { first_seen: sortDirection },
+    total_events: { total_events: sortDirection },
+    duration: { duration_ms: sortDirection },
+  };
+  const sortCriterion = sortMap[sortBy] || { last_seen: -1 };
+
+  const pipeline = [
+    { $match: matchStage },
+    { $sort: { timestamp: 1 } },
+    {
+      $group: {
+        _id: '$session_id',
+        session_id: { $first: '$session_id' },
+        first_seen: { $min: '$timestamp' },
+        last_seen: { $max: '$timestamp' },
+        total_events: { $sum: 1 },
+        page_view_count: {
+          $sum: { $cond: [{ $eq: ['$event_type', 'page_view'] }, 1, 0] },
+        },
+        click_count: {
+          $sum: { $cond: [{ $eq: ['$event_type', 'click'] }, 1, 0] },
+        },
+        pages_visited: { $addToSet: '$page_path' },
+        device: { $last: '$device' },
+        entry_page: { $first: '$page_path' },
+        has_rage_clicks: { $max: '$is_rage_click' },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        session_id: 1,
+        first_seen: 1,
+        last_seen: 1,
+        total_events: 1,
+        page_view_count: 1,
+        click_count: 1,
+        distinct_pages_count: { $size: '$pages_visited' },
+        pages_visited: 1,
+        device: 1,
+        entry_page: 1,
+        has_rage_clicks: { $ifNull: ['$has_rage_clicks', false] },
+        duration_ms: { $subtract: ['$last_seen', '$first_seen'] },
+      },
+    },
+    { $sort: sortCriterion },
+    { $limit: limit },
+  ];
+
+  return Event.aggregate(pipeline);
 }
 
 export async function getSessionEvents(sessionId) {

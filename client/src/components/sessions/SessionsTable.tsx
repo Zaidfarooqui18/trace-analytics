@@ -14,8 +14,7 @@ import {
 import { Session } from '../../types';
 import { DeviceBadge, Badge } from '../common/Badge';
 import { TableRowSkeleton } from '../common/Skeleton';
-import { EmptyState } from '../common/EmptyState';
-import { formatDuration, formatRelativeTime, exportToCsv } from '../../lib/utils';
+import { formatDuration, formatRelativeTime } from '../../lib/utils';
 
 interface SessionsTableProps {
   sessions: Session[];
@@ -29,8 +28,12 @@ interface SessionsTableProps {
   onDeviceChange: (val: string) => void;
   sortBy: string;
   onSortByChange: (val: string) => void;
+  dateRange?: string;
   onPageChange: (newPage: number) => void;
   onSelectSession: (sessionId: string) => void;
+  onExportCsv: () => void;
+  isExporting?: boolean;
+  onResetFilters?: () => void;
 }
 
 export function SessionsTable({
@@ -45,8 +48,12 @@ export function SessionsTable({
   onDeviceChange,
   sortBy,
   onSortByChange,
+  dateRange,
   onPageChange,
   onSelectSession,
+  onExportCsv,
+  isExporting = false,
+  onResetFilters,
 }: SessionsTableProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -55,24 +62,6 @@ export function SessionsTable({
     navigator.clipboard.writeText(id);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  const handleExport = () => {
-    const exportData = sessions.map((s) => ({
-      session_id: s.session_id,
-      first_seen: s.first_seen,
-      last_seen: s.last_seen,
-      duration_seconds: Math.round(s.duration_ms / 1000),
-      total_events: s.total_events,
-      page_views: s.page_view_count,
-      clicks: s.click_count,
-      pages_visited: s.pages_visited.join('; '),
-      device_type: s.device?.type || 'desktop',
-      browser: s.device?.browser || 'Other',
-      os: s.device?.os || 'Other',
-      has_rage_clicks: s.has_rage_clicks ? 'yes' : 'no',
-    }));
-    exportToCsv(`trace-sessions-page-${page}.csv`, exportData);
   };
 
   return (
@@ -123,14 +112,28 @@ export function SessionsTable({
             </select>
           </div>
 
-          {/* Export to CSV */}
+          {/* Export to CSV (All matching rows from backend) */}
           <button
-            onClick={handleExport}
-            disabled={sessions.length === 0}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+            onClick={onExportCsv}
+            disabled={isExporting || totalSessions === 0}
+            title={
+              totalSessions === 0
+                ? 'No sessions available to export'
+                : `Export all ${totalSessions} filtered sessions as CSV`
+            }
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Export CSV</span>
+            {isExporting ? (
+              <>
+                <span className="w-3.5 h-3.5 border-2 border-slate-400 border-t-brand-500 rounded-full animate-spin" />
+                <span>Exporting...</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
+                <span>Export CSV{totalSessions > 0 ? ` (${totalSessions})` : ''}</span>
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -155,11 +158,49 @@ export function SessionsTable({
                 Array.from({ length: 6 }).map((_, i) => <TableRowSkeleton key={i} cols={7} />)
               ) : sessions.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12">
-                    <EmptyState
-                      title="No sessions match your filter"
-                      description="Try clearing your search query or choosing another date range."
-                    />
+                  <td colSpan={7} className="py-14 text-center">
+                    {search || device !== 'all' || (dateRange && dateRange !== 'all') ? (
+                      <div className="flex flex-col items-center justify-center max-w-sm mx-auto p-4">
+                        <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3 shadow-xs">
+                          <Filter className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">
+                          No sessions match your active filters
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+                          No sessions were found for the current search query, device type, or date range. Try widening your criteria.
+                        </p>
+                        {onResetFilters && (
+                          <button
+                            onClick={onResetFilters}
+                            className="px-4 py-2 rounded-xl text-xs font-semibold bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-300 border border-brand-200 dark:border-brand-800 hover:bg-brand-100 transition-colors"
+                          >
+                            Reset Search & Filters
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center max-w-sm mx-auto p-4">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center mb-3 shadow-xs">
+                          <Download className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">
+                          No analytics sessions recorded yet
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">
+                          Events captured by the tracker will automatically appear here as unified sessions. Open the demo store to generate activity.
+                        </p>
+                        <a
+                          href="http://localhost:3001"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white hover:bg-brand-700 transition-colors inline-flex items-center gap-1.5 shadow-sm"
+                        >
+                          <span>Open Demo Store</span>
+                          <span>&rarr;</span>
+                        </a>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ) : (

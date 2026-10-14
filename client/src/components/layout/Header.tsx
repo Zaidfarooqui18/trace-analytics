@@ -60,10 +60,19 @@ export function Header({
           </div>
         )}
 
-        {/* Live Auto-Refresh Toggle */}
+        {/* Real-time Tracker Ingestion Status */}
+        <div
+          title="Tracking ingestion pipeline is active and accepting events"
+          className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/80"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Tracker Active</span>
+        </div>
+
+        {/* Live Auto-Refresh Polling Toggle */}
         <button
           onClick={onToggleLive}
-          title="Toggle live polling mode (auto-refresh every 5s)"
+          title={isLive ? 'Auto-refresh active (polling every 5s)' : 'Auto-refresh paused. Click to enable 5s live polling.'}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
             isLive
               ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800 shadow-xs'
@@ -71,7 +80,7 @@ export function Header({
           }`}
         >
           <Radio className={`w-3.5 h-3.5 ${isLive ? 'text-emerald-500 animate-pulse' : 'text-slate-400'}`} />
-          <span>{isLive ? 'Live' : 'Paused'}</span>
+          <span>{isLive ? 'Live Sync: On' : 'Live Sync: Off'}</span>
         </button>
 
         {/* Date Range Selector */}

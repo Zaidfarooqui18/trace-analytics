@@ -77,9 +77,19 @@ export const SessionsQuerySchema = z.object({
   search: z.string().trim().optional(),
   sortBy: z.enum(['last_seen', 'first_seen', 'total_events', 'duration']).default('last_seen'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
-  startDate: z.string().datetime({ offset: true }).or(z.string().regex(/^\d{4}-\d{2}-\d{2}/)).optional(),
-  endDate: z.string().datetime({ offset: true }).or(z.string().regex(/^\d{4}-\d{2}-\d{2}/)).optional(),
+  startDate: z.string().optional().transform((val) => (val && val.trim() ? val.trim() : undefined)),
+  endDate: z.string().optional().transform((val) => (val && val.trim() ? val.trim() : undefined)),
   device: z.enum(['desktop', 'mobile', 'tablet', 'all']).optional(),
+});
+
+export const SessionsExportQuerySchema = z.object({
+  search: z.string().trim().optional(),
+  sortBy: z.enum(['last_seen', 'first_seen', 'total_events', 'duration']).default('last_seen'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+  startDate: z.string().optional().transform((val) => (val && val.trim() ? val.trim() : undefined)),
+  endDate: z.string().optional().transform((val) => (val && val.trim() ? val.trim() : undefined)),
+  device: z.enum(['desktop', 'mobile', 'tablet', 'all']).optional(),
+  limit: z.coerce.number().int().min(1).max(50000).default(10000),
 });
 
 export const HeatmapQuerySchema = z.object({

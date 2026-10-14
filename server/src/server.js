@@ -6,6 +6,18 @@ async function bootstrap() {
   try {
     await connectDb();
 
+    // Auto-seed initial realistic demo dataset if database is empty in development
+    if (config.nodeEnv !== 'production' && config.nodeEnv !== 'test') {
+      const { Event } = await import('./models/Event.js');
+      const eventCount = await Event.countDocuments();
+      if (eventCount === 0) {
+        console.log('[Server] Database is empty on startup. Auto-seeding initial realistic demo dataset...');
+        const { generateDemoSeedData } = await import('./services/seed.service.js');
+        await generateDemoSeedData(20);
+        console.log('[Server] Auto-seed complete.');
+      }
+    }
+
     const app = createApp();
 
     const server = app.listen(config.port, () => {
