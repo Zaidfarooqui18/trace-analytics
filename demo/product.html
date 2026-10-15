@@ -11,7 +11,7 @@
   <div class="tracking-banner">
     <span class="pulse-dot"></span>
     <span><strong>Trace Analytics Active:</strong> Anonymous interaction events and clicks on this page are captured.</span>
-    <a href="http://localhost:5173" target="_blank" id="banner-dashboard-link">Open Dashboard &rarr;</a>
+    <a href="../" target="_blank" id="banner-dashboard-link">Open Dashboard &rarr;</a>
   </div>
 
   <!-- Header -->
@@ -167,6 +167,17 @@
   <!-- Scripts -->
   <script src="cart.js"></script>
   <script src="script.js"></script>
-  <script src="http://localhost:5000/tracker.js" data-api="http://localhost:5000" async></script>
+  <script>
+    (function () {
+      var isLocalDev = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port === '3001';
+      var trackerScript = document.createElement('script');
+      trackerScript.src = isLocalDev ? 'http://localhost:5000/tracker.js' : '../tracker.js';
+      if (isLocalDev) {
+        trackerScript.setAttribute('data-api', 'http://localhost:5000');
+      }
+      trackerScript.async = true;
+      document.body.appendChild(trackerScript);
+    })();
+  </script>
 </body>
 </html>

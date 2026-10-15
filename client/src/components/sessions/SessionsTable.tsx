@@ -191,7 +191,7 @@ export function SessionsTable({
                           Events captured by the tracker will automatically appear here as unified sessions. Open the demo store to generate activity.
                         </p>
                         <a
-                          href="http://localhost:3001"
+                          href={import.meta.env.DEV ? 'http://localhost:3001' : `${import.meta.env.BASE_URL}demo/index.html`}
                           target="_blank"
                           rel="noreferrer"
                           className="px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white hover:bg-brand-700 transition-colors inline-flex items-center gap-1.5 shadow-sm"

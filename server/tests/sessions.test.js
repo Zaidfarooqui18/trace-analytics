@@ -1,7 +1,14 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
+import { createApp } from '../src/app.js';
+import { connectDb, disconnectDb } from '../src/config/db.js';
 
-const BASE_URL = 'http://localhost:5000';
+let appInstance = null;
+let isInternalDb = false;
+
+function getTarget() {
+  return appInstance || 'http://localhost:5000';
+}
 
 describe('Sessions API and CSV Export Integration Tests', () => {
   const now = Date.now();
@@ -10,6 +17,15 @@ describe('Sessions API and CSV Export Integration Tests', () => {
   const SESS_3 = 'session-uuid-tablet-0003';
 
   beforeAll(async () => {
+    try {
+      const ping = await fetch('http://localhost:5000/api/health', { signal: AbortSignal.timeout(1000) });
+      if (!ping.ok) throw new Error('Not running');
+    } catch {
+      await connectDb();
+      appInstance = createApp();
+      isInternalDb = true;
+    }
+
     // Session 1: Recent (2 hours ago), Desktop, Windows, 1 page_view, 2 clicks
     const t1 = new Date(now - 2 * 60 * 60 * 1000);
     const t1_end = new Date(t1.getTime() + 30 * 1000);
@@ -138,15 +154,15 @@ describe('Sessions API and CSV Export Integration Tests', () => {
     ];
 
     // Ingest events into running database
-    await request(BASE_URL)
+    await request(getTarget())
       .post('/api/events')
       .send(testEvents)
       .expect(201);
-  });
+  }, 180000);
 
   describe('1. Sessions Aggregation & Schema Contracts', () => {
     it('aggregates events into sessions with correct counts and response envelope', async () => {
-      const res = await request(BASE_URL).get('/api/sessions').expect(200);
+      const res = await request(getTarget()).get('/api/sessions').expect(200);
 
       expect(res.body.success).toBe(true);
       expect(Array.isArray(res.body.data)).toBe(true);
@@ -179,7 +195,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
   describe('2. Date Filtering', () => {
     it('filters correctly for 24-hour range', async () => {
       const startDate = new Date(now - 24 * 60 * 60 * 1000).toISOString();
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get(`/api/sessions?startDate=${encodeURIComponent(startDate)}&search=${SESS_1}`)
         .expect(200);
 
@@ -189,7 +205,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
 
     it('filters correctly for 7-day range', async () => {
       const startDate = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get(`/api/sessions?startDate=${encodeURIComponent(startDate)}&search=session-uuid`)
         .expect(200);
 
@@ -200,7 +216,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
     });
 
     it('returns all sessions including 15-day-old session when no date range is passed', async () => {
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get('/api/sessions?search=session-uuid')
         .expect(200);
 
@@ -213,7 +229,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
 
   describe('3. Search and Device Filtering', () => {
     it('filters by session UUID substring', async () => {
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get('/api/sessions?search=mobile-0002')
         .expect(200);
 
@@ -222,7 +238,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
     });
 
     it('returns 0 results for non-matching search without throwing errors', async () => {
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get('/api/sessions?search=non-existent-xyz-999')
         .expect(200);
 
@@ -231,13 +247,13 @@ describe('Sessions API and CSV Export Integration Tests', () => {
     });
 
     it('filters by device type', async () => {
-      const desktopRes = await request(BASE_URL)
+      const desktopRes = await request(getTarget())
         .get(`/api/sessions?device=desktop&search=${SESS_1}`)
         .expect(200);
       expect(desktopRes.body.pagination.total).toBe(1);
       expect(desktopRes.body.sessions[0].session_id).toBe(SESS_1);
 
-      const mobileRes = await request(BASE_URL)
+      const mobileRes = await request(getTarget())
         .get(`/api/sessions?device=mobile&search=${SESS_2}`)
         .expect(200);
       expect(mobileRes.body.pagination.total).toBe(1);
@@ -247,7 +263,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
 
   describe('4. Sorting and Pagination', () => {
     it('paginates results accurately', async () => {
-      const page1Res = await request(BASE_URL)
+      const page1Res = await request(getTarget())
         .get('/api/sessions?limit=1&page=1')
         .expect(200);
 
@@ -255,7 +271,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
       expect(page1Res.body.pagination.page).toBe(1);
       expect(page1Res.body.sessions.length).toBe(1);
 
-      const page2Res = await request(BASE_URL)
+      const page2Res = await request(getTarget())
         .get('/api/sessions?limit=1&page=2')
         .expect(200);
       expect(page2Res.body.sessions.length).toBe(1);
@@ -267,7 +283,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
 
   describe('5. CSV Export Endpoint (/api/sessions/export)', () => {
     it('returns valid CSV with headers, UTF-8 BOM, and Content-Disposition', async () => {
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get('/api/sessions/export')
         .expect(200)
         .expect('Content-Type', /text\/csv/);
@@ -297,7 +313,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
 
     it('honors active filters and exports all matching records', async () => {
       // Export with mobile device filter and search
-      const mobileRes = await request(BASE_URL)
+      const mobileRes = await request(getTarget())
         .get(`/api/sessions/export?device=mobile&search=${SESS_2}`)
         .expect(200);
 
@@ -307,7 +323,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
     });
 
     it('returns a clean header-only CSV when no sessions match filter', async () => {
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get('/api/sessions/export?search=non-existent-uuid-xyz-404')
         .expect(200);
 
@@ -321,7 +337,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
 
     it('properly escapes values with commas and double quotes in CSV', async () => {
       const specialSessionId = 'sess-special-"quote",comma-test';
-      await request(BASE_URL)
+      await request(getTarget())
         .post('/api/events')
         .send({
           event_id: 'evt-special-escape-1',
@@ -335,7 +351,7 @@ describe('Sessions API and CSV Export Integration Tests', () => {
         })
         .expect(201);
 
-      const res = await request(BASE_URL)
+      const res = await request(getTarget())
         .get(`/api/sessions/export?search=${encodeURIComponent('sess-special')}`)
         .expect(200);
 
@@ -345,5 +361,11 @@ describe('Sessions API and CSV Export Integration Tests', () => {
       expect(lines[1]).toContain('"sess-special-""quote"",comma-test"');
       expect(lines[1]).toContain('"/special,path.html"');
     });
+  });
+
+  afterAll(async () => {
+    if (isInternalDb) {
+      await disconnectDb();
+    }
   });
 });

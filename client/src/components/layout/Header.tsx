@@ -53,20 +53,32 @@ export function Header({
         {dbStatus && (
           <div
             title={`MongoDB status: ${dbStatus.status} (${dbStatus.mode})`}
-            className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700"
+            className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${
+              dbStatus.status === 'connected'
+                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+                : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-900/60'
+            }`}
           >
-            <Database className="w-3 h-3 text-emerald-500" />
+            <Database className={`w-3 h-3 ${dbStatus.status === 'connected' ? 'text-emerald-500' : 'text-rose-500'}`} />
             <span className="capitalize">{dbStatus.status === 'connected' ? 'DB Connected' : 'DB Offline'}</span>
           </div>
         )}
 
         {/* Real-time Tracker Ingestion Status */}
         <div
-          title="Tracking ingestion pipeline is active and accepting events"
-          className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/80"
+          title={
+            dbStatus?.status === 'connected'
+              ? 'Tracking ingestion pipeline is active and accepting events'
+              : 'Tracking API standby. Live event aggregation requires a connected backend service.'
+          }
+          className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${
+            dbStatus?.status === 'connected'
+              ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/80'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+          }`}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Tracker Active</span>
+          <span className={`w-1.5 h-1.5 rounded-full ${dbStatus?.status === 'connected' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+          <span>{dbStatus?.status === 'connected' ? 'Tracker Active' : 'API Standby'}</span>
         </div>
 
         {/* Live Auto-Refresh Polling Toggle */}

@@ -8,16 +8,35 @@ import {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
+function getMissingBackendMessage(): string | null {
+  if (!API_BASE && typeof window !== 'undefined' && window.location.hostname.endsWith('github.io')) {
+    return 'Backend API is not deployed on GitHub Pages. To connect live analytics, deploy the backend and configure VITE_API_BASE_URL.';
+  }
+  return null;
+}
+
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${url}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${url}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+    });
+  } catch (networkErr: any) {
+    const hint = getMissingBackendMessage();
+    if (hint) throw new Error(hint);
+    throw networkErr;
+  }
 
   if (!res.ok) {
+    const hint = getMissingBackendMessage();
+    if (hint && res.status === 404) {
+      throw new Error(hint);
+    }
+
     let errMsg = `Request failed: ${res.status} ${res.statusText}`;
     try {
       const errJson = await res.json();

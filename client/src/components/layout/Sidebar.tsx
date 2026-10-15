@@ -86,7 +86,7 @@ export function Sidebar({ onOpenEmbedModal, className }: SidebarProps) {
 
         {/* Demo Store Link */}
         <a
-          href="http://localhost:3001"
+          href={import.meta.env.DEV ? 'http://localhost:3001' : `${import.meta.env.BASE_URL}demo/index.html`}
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white transition-all group"

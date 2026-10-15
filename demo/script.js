@@ -28,6 +28,25 @@
     return window.TCCart;
   }
 
+  function getDashboardUrl() {
+    var isLocalDev = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port === '3001';
+    return isLocalDev ? 'http://localhost:5173' : '../';
+  }
+
+  // Update banner link dynamically
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateBannerLink);
+  } else {
+    updateBannerLink();
+  }
+
+  function updateBannerLink() {
+    var bannerDashboardLink = document.getElementById('banner-dashboard-link');
+    if (bannerDashboardLink) {
+      bannerDashboardLink.href = getDashboardUrl();
+    }
+  }
+
   // Update all header badges across pages
   function syncBadge() {
     const cart = getCart();
@@ -509,7 +528,7 @@
           <a href="index.html" class="btn-primary" style="flex: 1; text-align: center; justify-content: center; text-decoration: none;">
             Return to Storefront
           </a>
-          <a href="http://localhost:5173" target="_blank" class="btn-secondary" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <a href="${getDashboardUrl()}" target="_blank" class="btn-secondary" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
             <span>View Analytics</span>
             <span>&rarr;</span>
           </a>

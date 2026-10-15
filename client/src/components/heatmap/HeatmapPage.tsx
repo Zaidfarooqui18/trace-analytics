@@ -98,6 +98,8 @@ export function HeatmapPage({ dateRange, isLive }: HeatmapPageProps) {
     return <ErrorState message={error} onRetry={fetchHeatmap} />;
   }
 
+  const demoStoreUrl = import.meta.env.DEV ? 'http://localhost:3001' : `${import.meta.env.BASE_URL}demo/index.html`;
+
   if (pages.length === 0 && !loading) {
     return (
       <EmptyState
@@ -105,7 +107,7 @@ export function HeatmapPage({ dateRange, isLive }: HeatmapPageProps) {
         description="Interact with the demo store or embed tracker.js to start capturing clicks and generating heatmaps."
         action={{
           label: 'Open Demo Store',
-          onClick: () => window.open('http://localhost:3001', '_blank'),
+          onClick: () => window.open(demoStoreUrl, '_blank'),
         }}
       />
     );
@@ -143,7 +145,7 @@ export function HeatmapPage({ dateRange, isLive }: HeatmapPageProps) {
           description="Click around on this webpage in the demo store to generate click points and heatmap heat blobs."
           action={{
             label: 'Open Demo Store',
-            onClick: () => window.open(selectedPageUrl || 'http://localhost:3001', '_blank'),
+            onClick: () => window.open(selectedPageUrl || demoStoreUrl, '_blank'),
           }}
         />
       ) : (

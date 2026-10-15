@@ -59,11 +59,14 @@ export function CommandPalette({ isOpen, onClose, onOpenEmbedModal }: CommandPal
       },
     },
     {
-      label: 'Open Demo Store (localhost:3001)',
+      label: import.meta.env.DEV ? 'Open Demo Store (localhost:3001)' : 'Open Demo Store',
       category: 'Quick Links',
       icon: ExternalLink,
       action: () => {
-        window.open('http://localhost:3001', '_blank');
+        const demoUrl = import.meta.env.DEV
+          ? 'http://localhost:3001'
+          : `${import.meta.env.BASE_URL}demo/index.html`;
+        window.open(demoUrl, '_blank');
         onClose();
       },
     },

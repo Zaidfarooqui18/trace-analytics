@@ -11,9 +11,21 @@ export function EmbedModal({ isOpen, onClose }: EmbedModalProps) {
 
   if (!isOpen) return null;
 
+  const trackerScriptUrl = import.meta.env.VITE_API_BASE_URL
+    ? `${import.meta.env.VITE_API_BASE_URL}/tracker.js`
+    : typeof window !== 'undefined' && !import.meta.env.DEV
+    ? `${window.location.origin}${import.meta.env.BASE_URL}tracker.js`
+    : 'http://localhost:5000/tracker.js';
+
+  const trackerApiUrl = import.meta.env.VITE_API_BASE_URL
+    ? import.meta.env.VITE_API_BASE_URL
+    : typeof window !== 'undefined' && !import.meta.env.DEV
+    ? window.location.origin
+    : 'http://localhost:5000';
+
   const scriptTag = `<script
-  src="http://localhost:5000/tracker.js"
-  data-api="http://localhost:5000"
+  src="${trackerScriptUrl}"
+  data-api="${trackerApiUrl}"
   async
 ></script>`;
 

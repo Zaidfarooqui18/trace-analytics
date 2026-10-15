@@ -7,10 +7,10 @@ Built as a submission for the **Full Stack Engineer Intern** role at **CausalFun
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FZaidfarooqui18%2Ftrace-analytics&env=MONGODB_URI)
 
 🔗 **Quick Links**:
-- 🌐 **Live Demo Portal & Store**: [https://zaidfarooqui18.github.io/trace-analytics/](https://zaidfarooqui18.github.io/trace-analytics/)
+- 📊 **Live Analytics Dashboard**: [https://zaidfarooqui18.github.io/trace-analytics/](https://zaidfarooqui18.github.io/trace-analytics/)
 - 🛍️ **Demo Store Direct**: [https://zaidfarooqui18.github.io/trace-analytics/demo/index.html](https://zaidfarooqui18.github.io/trace-analytics/demo/index.html)
 - 🚀 **1-Click Vercel Full-Stack Deployment Guide**: [Jump to Instructions](#option-a-unified-full-stack-deployment-on-vercel-recommended)
-- 🧪 **Automated Tests**: 28 passing tests (`npm test --prefix server`)
+- 🧪 **Automated Tests**: Vitest suite (`npm test --prefix server`)
 
 ---
 

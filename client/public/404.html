@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Trace Analytics</title>
+    <script>
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      // This script redirects any 404 URL on GitHub Pages back to index.html with a query route.
+      var l = window.location;
+      var pathSegments = l.pathname.split('/').filter(Boolean);
+      // If hosted under repository subpath (e.g. /trace-analytics/), keep 1 segment. Otherwise 0.
+      var isSubpath = pathSegments.length > 0 && pathSegments[0] === 'trace-analytics';
+      var pathSegmentsToKeep = isSubpath ? 1 : 0;
+
+      var basePath = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/';
+
+      var routePath = l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~');
+      var searchParams = l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '';
+
+      l.replace(basePath + routePath + searchParams + l.hash);
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
