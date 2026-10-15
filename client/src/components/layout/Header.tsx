@@ -49,18 +49,34 @@ export function Header({
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Database connectivity badge */}
+        {/* Database connectivity / Demonstration mode badge */}
         {dbStatus && (
           <div
-            title={`MongoDB status: ${dbStatus.status} (${dbStatus.mode})`}
+            title={`Database status: ${dbStatus.status} (${dbStatus.mode})`}
             className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${
               dbStatus.status === 'connected'
                 ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+                : dbStatus.status === 'demo'
+                ? 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
                 : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-900/60'
             }`}
           >
-            <Database className={`w-3 h-3 ${dbStatus.status === 'connected' ? 'text-emerald-500' : 'text-rose-500'}`} />
-            <span className="capitalize">{dbStatus.status === 'connected' ? 'DB Connected' : 'DB Offline'}</span>
+            <Database
+              className={`w-3 h-3 ${
+                dbStatus.status === 'connected'
+                  ? 'text-emerald-500'
+                  : dbStatus.status === 'demo'
+                  ? 'text-amber-500'
+                  : 'text-rose-500'
+              }`}
+            />
+            <span>
+              {dbStatus.status === 'connected'
+                ? 'DB Connected'
+                : dbStatus.status === 'demo'
+                ? 'Demo Mode (Static)'
+                : 'DB Offline'}
+            </span>
           </div>
         )}
 
@@ -69,16 +85,34 @@ export function Header({
           title={
             dbStatus?.status === 'connected'
               ? 'Tracking ingestion pipeline is active and accepting events'
+              : dbStatus?.status === 'demo'
+              ? 'Demonstration dataset active with realistic visitor journeys & heatmaps'
               : 'Tracking API standby. Live event aggregation requires a connected backend service.'
           }
           className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${
             dbStatus?.status === 'connected'
               ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/80'
+              : dbStatus?.status === 'demo'
+              ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
           }`}
         >
-          <span className={`w-1.5 h-1.5 rounded-full ${dbStatus?.status === 'connected' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
-          <span>{dbStatus?.status === 'connected' ? 'Tracker Active' : 'API Standby'}</span>
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              dbStatus?.status === 'connected'
+                ? 'bg-emerald-500 animate-pulse'
+                : dbStatus?.status === 'demo'
+                ? 'bg-blue-500'
+                : 'bg-slate-400'
+            }`}
+          />
+          <span>
+            {dbStatus?.status === 'connected'
+              ? 'Tracker Active'
+              : dbStatus?.status === 'demo'
+              ? 'Demo Dataset'
+              : 'API Standby'}
+          </span>
         </div>
 
         {/* Live Auto-Refresh Polling Toggle */}
